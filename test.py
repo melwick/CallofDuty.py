@@ -9,17 +9,17 @@ from callofduty import Mode, Platform, Reaction, Title
 
 async def main():
     load_dotenv()
-    client = await callofduty.Login(
-        os.environ["ATVI_EMAIL"], os.environ["ATVI_PASSWORD"]
-    )
+    # client = await callofduty.Login(os.environ["ATVI_EMAIL"], os.environ["ATVI_PASSWORD"])
+    client = await callofduty.Login("oli@gmx.de", "heckmeck99!!")
 
-    # season = await client.GetLootSeason(Title.BlackOps4, 3)
-    # print(f"{season.title.name}: {season.name}")
-    # for tier in season.tiers:
-    #     print(f"Tier {tier.tier}: {tier.name} - {tier.rarity} {tier.category}")
-    # for chase in season.chase:
-    #     print(f"Chase: {chase.name} - {chase.rarity} {chase.category}")
+    season = await client.GetLootSeason(Title.BlackOps4, 3)
+    print(f"{season.title.name}: {season.name}")
+    for tier in season.tiers:
+        print(f"Tier {tier.tier}: {tier.name} - {tier.rarity} {tier.category}")
+    for chase in season.chase:
+        print(f"Chase: {chase.name} - {chase.rarity} {chase.category}")
 
+    # Authentication required
     # requests = await client.GetMyFriendRequests()
     # for incoming in requests["incoming"]:
     #     print(f"Incoming Friend Request: {incoming.username} ({incoming.platform.name})")
@@ -50,9 +50,9 @@ async def main():
     # summary = await player.matchesSummary(Title.ModernWarfare, Mode.Warzone, limit=20)
     # print(summary)
 
-    # news = await client.GetNewsFeed(limit=10)
-    # for post in news:
-    #     print(f"{post.published.date()}: {post.title}")
+    news = await client.GetNewsFeed(limit=10)
+    for post in news:
+        print(f"{post.published.date()}: {post.title}")
 
     # videos = await client.GetVideoFeed(limit=3)
     # for video in videos:
