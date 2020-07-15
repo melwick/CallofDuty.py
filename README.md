@@ -42,3 +42,10 @@
 		- GitHistory
 		- Vim
 		- vscode-icons
+- Edit the .env file
+```.env
+ATVI_EMAIL="oli@gmx.de"
+ATVI_PASSWORD="hubbasubba"
+```
+* * *
+end
