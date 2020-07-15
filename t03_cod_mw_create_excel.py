@@ -10,6 +10,7 @@ from callofduty import Mode, Platform, Reaction, Title
 import openpyxl
 
 
+# This is the main function. Program execution starts at the bottom of this file (line 316)
 async def main():
     # Load Environment Variables from the file ".env"
     load_dotenv()
@@ -58,24 +59,22 @@ async def main():
         #     print(f"Chase: {chase.name} - {chase.rarity} {chase.category}")
 
 
-    # Get Loot Season
-    for x in range(1, 10):
-        season = await client.GetLootSeason(Title.ModernWarfare, x)
-        if not season.name:
-            break
-        else:
-            for tier in season.tiers:
-                print(f"Season: {season.title.name}: {season.name} - Tier {tier.tier}: {tier.name} - {tier.rarity} {tier.category}")
-            for chase in season.chase:
-                print(f"Chase: {chase.name} - {chase.rarity} {chase.category}")
-
     # News
+    wb_sheet_news = wb.create_sheet("News")
     news = await client.GetNewsFeed(limit=10)
     for post in news:
         print(f"{post.published.date()}: {post.title}")
+        wb_sheet_news.append((post.published.date(), post.title))
 
+    # Delete the default sheet
+    del wb['Sheet']
+
+    # Show sheet names
+    print(wb.sheetnames)
+
+    # Save the xlsx (workbook)
     wb.save(my_xls)
-    exit(0)
+
     # Authentication required
     # requests = await client.GetMyFriendRequests()
     # for incoming in requests["incoming"]:
