@@ -8,17 +8,59 @@ from callofduty import Mode, Platform, Reaction, Title
 
 
 async def main():
+    # Load Environment Variables from the file ".env"
     load_dotenv()
-    # client = await callofduty.Login(os.environ["ATVI_EMAIL"], os.environ["ATVI_PASSWORD"])
-    client = await callofduty.Login("oli@gmx.de", "heckmeck99!!")
+    cod_user_email = os.environ['ATVI_EMAIL']
+    cod_user_pass = os.environ['ATVI_PASSWORD']
 
-    season = await client.GetLootSeason(Title.BlackOps4, 3)
-    print(f"{season.title.name}: {season.name}")
-    for tier in season.tiers:
-        print(f"Tier {tier.tier}: {tier.name} - {tier.rarity} {tier.category}")
-    for chase in season.chase:
-        print(f"Chase: {chase.name} - {chase.rarity} {chase.category}")
+    # Print all your env variables
+    # print(os.environ)
 
+    # Print the PATH env
+    # print(os.environ['PATH'])
+
+    # print(f"User Email: {cod_user_email}, User Password: {cod_user_pass}")
+
+    
+
+    # CoD Login:
+    client = await callofduty.Login(cod_user_email, cod_user_pass)
+
+    # Show all Map of Modern Warfare
+    maps = await client.GetAvailableMaps(Title.ModernWarfare)
+    for mapName in maps:
+        for mode in maps[mapName]:
+            print(f"{mapName} - {mode}")
+
+    x = 1
+    while True:
+        season = await client.GetLootSeason(Title.ModernWarfare, x)
+        if not season.name:
+            break
+        x += 1
+        for tier in season.tiers:
+            print(f"Season: {season.title.name}: {season.name} - Tier {tier.tier}: {tier.name} - {tier.rarity} {tier.category}")
+        for chase in season.chase:
+            print(f"Chase: {chase.name} - {chase.rarity} {chase.category}")
+
+
+    # Get Loot Season
+    for x in range(1, 10):
+        season = await client.GetLootSeason(Title.ModernWarfare, x)
+        if not season.name:
+            break
+        else:
+            for tier in season.tiers:
+                print(f"Season: {season.title.name}: {season.name} - Tier {tier.tier}: {tier.name} - {tier.rarity} {tier.category}")
+            for chase in season.chase:
+                print(f"Chase: {chase.name} - {chase.rarity} {chase.category}")
+
+    # News
+    news = await client.GetNewsFeed(limit=10)
+    for post in news:
+        print(f"{post.published.date()}: {post.title}")
+
+    exit(0)
     # Authentication required
     # requests = await client.GetMyFriendRequests()
     # for incoming in requests["incoming"]:
@@ -50,9 +92,6 @@ async def main():
     # summary = await player.matchesSummary(Title.ModernWarfare, Mode.Warzone, limit=20)
     # print(summary)
 
-    news = await client.GetNewsFeed(limit=10)
-    for post in news:
-        print(f"{post.published.date()}: {post.title}")
 
     # videos = await client.GetVideoFeed(limit=3)
     # for video in videos:
@@ -259,4 +298,5 @@ async def main():
     # print(f"{challenge.title.name} Squads Tournament: {challenge.name} - {challenge.description}")
 
 
+# Program Start:
 asyncio.get_event_loop().run_until_complete(main())
