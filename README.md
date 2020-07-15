@@ -1,14 +1,15 @@
 # Using the Call of Duty - Modern Warfare API with Python
 
 ## Call of Duty: Modern Warfare API Documentation
-- This API provides stats for Warzone and Multiplayer.
+- This API provides stats for Warzone and Multiplayer and is forked from [https://github.com/EthanC/CallofDuty.py](https://github.com/EthanC/CallofDuty.py)
 
 ## Pre-requisites
+
 - Install **python** 3.8.4
-	- Check python version
-		```cmd
-		python3 --version
-		```
+  - Check python version
+	```cmd
+	python3 --version
+	```
 - Install **git** 2.25.1
 - Make project folder
 	```cmd
