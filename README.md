@@ -5,6 +5,8 @@
 - This API provides stats for Warzone and Multiplayer and is forked from
     [https://github.com/EthanC/CallofDuty.py](https://github.com/EthanC/CallofDuty.py)
 
+- It is forked only for educational purposes
+
 ## Pre-requisites
 
 - Install **python** 3.8.x
