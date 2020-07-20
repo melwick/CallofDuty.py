@@ -6,32 +6,34 @@ from dotenv import load_dotenv
 import callofduty
 from callofduty import Mode, Platform, Reaction, Title
 
-
+# This is the main function. Program execution starts at the bottom of this file (line 316)
 async def main():
     # Load Environment Variables from the file ".env"
     load_dotenv()
-    cod_user_email = os.environ['ATVI_EMAIL']
-    cod_user_pass = os.environ['ATVI_PASSWORD']
+
+    # Extract CoD Email and Passwd from the environment:
+    cod_user_email = os.environ["ATVI_EMAIL"]
+    cod_user_pass = os.environ["ATVI_PASSWORD"]
 
     # Print all your env variables
     # print(os.environ)
 
-    # Print the PATH env
-    # print(os.environ['PATH'])
+    # Example: Print the PATH env
+    print(os.environ["PATH"])
 
-    # print(f"User Email: {cod_user_email}, User Password: {cod_user_pass}")
+    # Example: Print
+    print(f"User Email: {cod_user_email}, User Password: {cod_user_pass}")
 
-    
-
-    # CoD Login:
+    # CoD Login: This creates an client object. All further operations use the client object.
     client = await callofduty.Login(cod_user_email, cod_user_pass)
 
-    # Show all Map of Modern Warfare
+    # Show all Maps of Modern Warfare
     maps = await client.GetAvailableMaps(Title.ModernWarfare)
     for mapName in maps:
         for mode in maps[mapName]:
-            print(f"{mapName} - {mode}")
+            print(f"Maps: {mapName} - {mode}")
 
+    # Seasons & Tiers
     x = 1
     while True:
         season = await client.GetLootSeason(Title.ModernWarfare, x)
@@ -39,28 +41,63 @@ async def main():
             break
         x += 1
         for tier in season.tiers:
-            print(f"Season: {season.title.name}: {season.name} - Tier {tier.tier}: {tier.name} - {tier.rarity} {tier.category}")
-        for chase in season.chase:
-            print(f"Chase: {chase.name} - {chase.rarity} {chase.category}")
-
-
-    # Get Loot Season
-    for x in range(1, 10):
-        season = await client.GetLootSeason(Title.ModernWarfare, x)
-        if not season.name:
-            break
-        else:
-            for tier in season.tiers:
-                print(f"Season: {season.title.name}: {season.name} - Tier {tier.tier}: {tier.name} - {tier.rarity} {tier.category}")
-            for chase in season.chase:
-                print(f"Chase: {chase.name} - {chase.rarity} {chase.category}")
+            print(
+                f"Season: {season.title.name}: {season.name} - Tier {tier.tier}: {tier.name} - {tier.rarity} {tier.category}"
+            )
+        # for chase in season.chase:
+        #     print(f"Chase: {chase.name} - {chase.rarity} {chase.category}")
 
     # News
     news = await client.GetNewsFeed(limit=10)
     for post in news:
-        print(f"{post.published.date()}: {post.title}")
+        print(f"News: {post.published.date()}: {post.title}")
 
-    exit(0)
+    # Player Info (Battlenet)
+    player = await client.GetPlayer(Platform.BattleNet, "Mxtive#1930")
+    print(f"Player: {player.username} ({player.platform.name})")
+
+    # Auth required
+    # summary = await player.matchesSummary(Title.ModernWarfare, Mode.Warzone, limit=20)
+    # print(summary)
+
+    # Player Info (Activision)
+    player = await client.GetPlayer(Platform.Activision, "Mxtive#1930")
+    print(f"Player: {player.username} ({player.platform.name})")
+
+    # Auth required
+    # summary = await player.matchesSummary(Title.ModernWarfare, Mode.Warzone, limit=20)
+    # print(summary)
+
+    # Videos
+    videos = await client.GetVideoFeed(limit=3)
+    for video in videos:
+        print(f"Videos: {video.title} - {video.url}")
+
+    # Leaderboard
+    leaderboard = await client.GetLeaderboard(
+        Title.ModernWarfare, Platform.BattleNet, gameMode="cyber", page=3
+    )
+    for entry in leaderboard.entries:
+        print(f"#{entry.rank}: {entry.username} ({entry.platform.name})")
+
+    # Leaderboard 2
+    # Auth required
+    # leaderboard = await client.GetPlayerLeaderboard(Title.BlackOps4, Platform.BattleNet, "Mxtive#1930")
+    # for entry in leaderboard.entries:
+    #     if entry.username == "Mxtive#1930":
+    #         print(f"#{entry.rank}: {entry.username} ({entry.platform.name})")
+
+    # Feed
+    # Error - no value
+    # feed = await client.GetFriendFeed(limit=3)
+    # for item in feed:
+    #     print(f"[{item.date.strftime('%Y-%m-%d %H:%M')}] {item.text}")
+    #     if (match := item.match) is not None:
+    #         for team in await match.teams():
+    #             for player in team:
+    #                 if player.username != item.player.username:
+    #                     print(f"                   {player.username} ({player.platform.name})")
+
     # Authentication required
     # requests = await client.GetMyFriendRequests()
     # for incoming in requests["incoming"]:
@@ -91,17 +128,6 @@ async def main():
     # player = await client.GetPlayer(Platform.BattleNet, "Mxtive#1930")
     # summary = await player.matchesSummary(Title.ModernWarfare, Mode.Warzone, limit=20)
     # print(summary)
-
-
-    # videos = await client.GetVideoFeed(limit=3)
-    # for video in videos:
-    #     print(f"{video.title} - {video.url}")
-
-    # leaderboard = await client.GetLeaderboard(
-    #     Title.ModernWarfare, Platform.BattleNet, gameMode="cyber", page=3
-    # )
-    # for entry in leaderboard.entries:
-    #     print(f"#{entry.rank}: {entry.username} ({entry.platform.name})")
 
     # leaderboard = await client.GetPlayerLeaderboard(
     #     Title.BlackOps4, Platform.BattleNet, "Mxtive#1930"
@@ -145,13 +171,15 @@ async def main():
     #     print(item.text)
     #     await item.unfavorite()
 
-    # maps = await client.GetAvailableMaps(Title.ModernWarfare)
-    # for mapName in maps:
-    #     print(mapName)
-    #     for mode in maps[mapName]:
-    #         print(f" - {mode}")
-
-    # matches = await client.GetPlayerMatches(Platform.Activision, "Yeah#8649242", Title.ModernWarfare, Mode.Multiplayer, limit=3)
+    # Matches
+    # Auth required
+    # matches = await client.GetPlayerMatches(
+    #     Platform.Activision,
+    #     "Yeah#8649242",
+    #     Title.ModernWarfare,
+    #     Mode.Multiplayer,
+    #     limit=3,
+    # )
     # for match in matches:
     #     print(match.id)
 
@@ -165,6 +193,7 @@ async def main():
     # details = await match.details()
     # print(details)
 
+    # Auth required
     # results = await client.SearchPlayers(Platform.Activision, "Tustin")
     # for player in results:
     #     print(f"{player.username} ({player.platform.name})")
@@ -173,9 +202,12 @@ async def main():
     # profile = await player.profile(Title.ModernWarfare, Mode.Multiplayer)
     # print(profile)
 
-    # localize = await client.GetLocalize()
-    # print(localize)
+    # A mass of output:
+    localize = await client.GetLocalize()
+    print(localize)
 
+    # Loadouts:
+    # Auth required
     # loadouts = await client.GetPlayerLoadouts(Platform.PlayStation, "ImMotive__", Title.BlackOps4)
     # for loadout in loadouts:
     #     if loadout.name != "":
@@ -232,6 +264,7 @@ async def main():
     # req = await client.RemoveFriend(13940176918450289589)
     # print(f"Friend Request Status: {req}")
 
+    # Auth required
     # results = await client.SearchPlayers(Platform.Activision, "Tustin")
     # for player in results:
     #     print(f"{player.username} ({player.platform.name})")
@@ -294,6 +327,7 @@ async def main():
     # squad = await client.GetSquad("Hmmmm")
     # await squad.report()
 
+    # Auth required
     # challenge = await client.GetSquadsTournament(Title.ModernWarfare)
     # print(f"{challenge.title.name} Squads Tournament: {challenge.name} - {challenge.description}")
 

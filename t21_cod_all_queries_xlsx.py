@@ -20,8 +20,7 @@ async def main():
     cod_user_pass = os.environ["ATVI_PASSWORD"]
 
     # you may change this to any valid user
-    userNameForQueries = "neanderHigh"
-    # userNameForQueries = "Icoryx#284"
+    userNameForQueries = os.environ["QUERY_USER"]
 
     # Print all your env variables
     # print(os.environ)
@@ -80,8 +79,9 @@ async def main():
                     tier.category,
                 )
             )
-        # for chase in season.chase:
-        #     print(f"Chase: {chase.name} - {chase.rarity} {chase.category}")
+
+        for chase in season.chase:
+            print(f"Chase: {chase.name} - {chase.rarity} {chase.category}")
 
     # News
     wb_sheet_news = wb.create_sheet("News")
@@ -141,7 +141,7 @@ async def main():
     for video in videos:
         print(f"{video.title} - {video.url}")
 
-    print("Leaderboard")
+    print("Leaderboard Modern Warfare")
     leaderboard = await client.GetLeaderboard(
         cod.Title.ModernWarfare, cod.Platform.BattleNet, gameMode="cyber", page=1
     )
@@ -154,13 +154,15 @@ async def main():
     for entry in leaderboard.entries:
         print(f"#{entry.rank}: {entry.username} ({entry.platform.name})")
 
-    # Not allowed
-    # leaderboard = await client.GetPlayerLeaderboard(
-    #     cod.Title.BlackOps4, cod.Platform.Steam, "neanderHigh"
-    # )
-    # for entry in leaderboard.entries:
-    #     if entry.username == "neanderHigh":
-    #         print(f"#{entry.rank}: {entry.username} ({entry.platform.name})")
+    # Not allowed - Geht moelicherweise nur fuer den user mit dem man selbst eingeloggt ist.
+    print("Leaderboard Modern Warfare")
+    leaderboard = await client.GetPlayerLeaderboard(
+        cod.Title.ModernWarfare, cod.Platform.BattleNet, userNameForQueries
+    )
+
+    for entry in leaderboard.entries:
+        if entry.username == userNameForQueries:
+            print(f"#{entry.rank}: {entry.username} ({entry.platform.name})")
 
     print("Leaderboard WW2")
     player = await client.GetPlayer(cod.Platform.Steam, userNameForQueries)

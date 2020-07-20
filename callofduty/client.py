@@ -620,7 +620,7 @@ class Client:
         VerifyPlatform(platform)
 
         return Match(
-            self, {"id": matchId, "platform": platform.value, "title": title.value,},
+            self, {"id": matchId, "platform": platform.value, "title": title.value},
         )
 
     async def GetPlayerMatches(
