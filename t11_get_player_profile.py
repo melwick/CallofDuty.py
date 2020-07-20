@@ -26,12 +26,26 @@ async def main():
 
     results = await client.GetPlayerProfile(
         cod.Platform.Activision,
-        "Icoryx",
+        queryUser,
         cod.Title.ModernWarfare,
         cod.Mode.Multiplayer,
     )
 
-    with open(f"player_data_{queryUser}.json", "w") as outfile:
+    # Show single key values
+    print("Title: ", results["title"])
+    print("Platorm: ", results["platform"])
+    print("Username: ", results["username"])
+    print("Type: ", results["type"])
+    print("Level: ", results["level"])
+
+    props = results["lifetime"]["all"]["properties"]
+
+    # Show selected properties
+    for key in props:
+        print(key, ": ", props[key])
+
+    # Save all data in a json file
+    with open(f"player_data_{queryUser}_2.json", "w") as outfile:
         json.dump(results, outfile)
 
 
